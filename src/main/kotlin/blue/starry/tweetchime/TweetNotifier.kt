@@ -187,9 +187,9 @@ object TweetNotifier {
             contentType(ContentType.Application.Json)
 
             body = DiscordWebhookMessage(
-                content = "https://twitter.com/${tweet.user.screenName}/status/${tweet.id}",
                 embeds = listOf(
                     DiscordEmbed(
+                        color = 1942002,
                         author = DiscordEmbed.Author(
                             name = "${tweet.user.name} (@${tweet.user.screenName})",
                             url = "https://twitter.com/${tweet.user.screenName}",
@@ -198,14 +198,8 @@ object TweetNotifier {
                         description = tweet.text,
                         fields = listOf(
                             DiscordEmbed.Field(
-                                name = "Retweets",
-                                value = "${tweet.retweetCount}",
-                                inline = true
-                            ),
-                            DiscordEmbed.Field(
-                                name = "Likes",
-                                value = "${tweet.favoriteCount}",
-                                inline = true
+                                name = "Link",
+                                value = "https://twitter.com/${tweet.user.screenName}/status/${tweet.id}"
                             )
                         ),
                         image = tweet.entities.media.firstOrNull()?.let {
