@@ -23,7 +23,7 @@ RUN gradle -version > /dev/null \
 # Final Stage
 FROM adoptopenjdk:11-jre-hotspot
 
-COPY --from=build /app/build/libs/feedchime-all.jar /app/feedchime.jar
+COPY --from=build /app/build/libs/tweetchime-all.jar /app/tweetchime.jar
 
 WORKDIR /app
-ENTRYPOINT ["java", "-jar", "/app/feedchime.jar"]
+ENTRYPOINT ["java", "-jar", "/app/tweetchime.jar"]
