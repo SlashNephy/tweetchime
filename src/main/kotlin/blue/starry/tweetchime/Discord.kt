@@ -1,4 +1,4 @@
-package blue.starry.feedchime
+package blue.starry.tweetchime
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName

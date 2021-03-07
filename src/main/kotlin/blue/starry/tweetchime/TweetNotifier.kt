@@ -1,4 +1,4 @@
-package blue.starry.feedchime
+package blue.starry.tweetchime
 
 import blue.starry.penicillin.extensions.createdAt
 import blue.starry.penicillin.extensions.instant

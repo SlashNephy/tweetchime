@@ -1,4 +1,4 @@
-package blue.starry.feedchime
+package blue.starry.tweetchime
 
 import ch.qos.logback.classic.Level
 import mu.KLogger

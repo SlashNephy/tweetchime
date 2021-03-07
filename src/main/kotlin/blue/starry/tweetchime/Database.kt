@@ -1,4 +1,4 @@
-package blue.starry.feedchime
+package blue.starry.tweetchime
 
 import org.jetbrains.exposed.sql.Table
 

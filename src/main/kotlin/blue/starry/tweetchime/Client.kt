@@ -1,4 +1,4 @@
-package blue.starry.feedchime
+package blue.starry.tweetchime
 
 import blue.starry.penicillin.PenicillinClient
 import blue.starry.penicillin.core.session.config.account

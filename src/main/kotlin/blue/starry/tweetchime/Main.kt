@@ -1,4 +1,4 @@
-package blue.starry.feedchime
+package blue.starry.tweetchime
 
 import kotlinx.coroutines.delay
 import mu.KotlinLogging
