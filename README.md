@@ -11,11 +11,11 @@
 [![issues](https://img.shields.io/github/issues/SlashNephy/tweetchime)](https://github.com/SlashNephy/tweetchime/issues)
 [![pull requests](https://img.shields.io/github/issues-pr/SlashNephy/tweetchime)](https://github.com/SlashNephy/tweetchime/pulls)
 
-[![screenshot.png](https://raw.githubusercontent.com/SlashNephy/tweetchime/master/docs/screenshot.png)](https://github.com/SlashNephy/tweetchime)
+[![screenshot.png](https://i.imgur.com/S7zK0Kl.png)](https://github.com/SlashNephy/tweetchime)
 
 ## Requirements
 
-- Java 8 or later
+- Java 11 or later
 
 ## Get Started
 

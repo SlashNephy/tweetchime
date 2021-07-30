@@ -3,6 +3,7 @@ package blue.starry.tweetchime
 import com.charleskorn.kaml.Yaml
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
+import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.readText
 
@@ -28,7 +29,7 @@ data class Config(
     )
 
     companion object {
-        private val path = Paths.get("config.yml")
+        private val path: Path get() = Paths.get("config.yml")
 
         fun load(): Config {
             val content = path.readText()

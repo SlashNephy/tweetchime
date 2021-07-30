@@ -20,14 +20,14 @@ import java.time.ZoneOffset
 
 object TweetNotifier {
     init {
-        transaction(TweetchimeDatabase) {
+        transaction(AppDatabase) {
             SchemaUtils.create(TweetUserScreenNameHistories)
             SchemaUtils.create(TweetUserIdHistories)
             SchemaUtils.create(TweetListIdHistories)
         }
     }
 
-    private val logger = KotlinLogging.createFeedchimeLogger("tweetchime.notifier")
+    private val logger = KotlinLogging.create("tweetchime.notifier")
 
     suspend fun check(tweets: List<Config.Tweet>) = coroutineScope {
         tweets.map {
@@ -51,12 +51,12 @@ object TweetNotifier {
     }
 
     private suspend fun checkByUserScreenName(screenName: String, config: Config.Tweet) {
-        val lastId = transaction(TweetchimeDatabase) {
+        val lastId = transaction(AppDatabase) {
             TweetUserScreenNameHistories.select { TweetUserScreenNameHistories.user eq screenName }.firstOrNull()?.get(TweetUserScreenNameHistories.id)
         }
         var newId = 0L
 
-        TweetFetcher.byUserScreenName(screenName, lastId, TweetchimeConfig.limit)
+        TweetFetcher.byUserScreenName(screenName, lastId, AppConfig.limit)
             .collectIndexed { i, tweet ->
                 logger.trace { tweet }
 
@@ -76,7 +76,7 @@ object TweetNotifier {
             return
         }
 
-        transaction(TweetchimeDatabase) {
+        transaction(AppDatabase) {
             // update if exists
             if (lastId != null) {
                 TweetUserScreenNameHistories.update({ TweetUserScreenNameHistories.user eq screenName }) {
@@ -93,12 +93,12 @@ object TweetNotifier {
     }
 
     private suspend fun checkByUserId(userId: Long, config: Config.Tweet) {
-        val lastId = transaction(TweetchimeDatabase) {
+        val lastId = transaction(AppDatabase) {
             TweetUserIdHistories.select { TweetUserIdHistories.user eq userId }.firstOrNull()?.get(TweetUserIdHistories.id)
         }
         var newId = 0L
 
-        TweetFetcher.byUserId(userId, lastId, TweetchimeConfig.limit)
+        TweetFetcher.byUserId(userId, lastId, AppConfig.limit)
             .collectIndexed { i, tweet ->
                 logger.trace { tweet }
 
@@ -118,7 +118,7 @@ object TweetNotifier {
             return
         }
 
-        transaction(TweetchimeDatabase) {
+        transaction(AppDatabase) {
             // update if exists
             if (lastId != null) {
                 TweetUserIdHistories.update({ TweetUserIdHistories.user eq userId }) {
@@ -135,12 +135,12 @@ object TweetNotifier {
     }
 
     private suspend fun checkByListId(listId: Long, config: Config.Tweet) {
-        val lastId = transaction(TweetchimeDatabase) {
+        val lastId = transaction(AppDatabase) {
             TweetListIdHistories.select { TweetListIdHistories.list eq listId }.firstOrNull()?.get(TweetListIdHistories.id)
         }
         var newId = 0L
 
-        TweetFetcher.byListId(listId, lastId, TweetchimeConfig.limit)
+        TweetFetcher.byListId(listId, lastId, AppConfig.limit)
             .collectIndexed { i, tweet ->
                 logger.trace { tweet }
 
@@ -160,7 +160,7 @@ object TweetNotifier {
             return
         }
 
-        transaction(TweetchimeDatabase) {
+        transaction(AppDatabase) {
             // update if exists
             if (lastId != null) {
                 TweetListIdHistories.update({ TweetListIdHistories.list eq listId }) {
@@ -183,7 +183,7 @@ object TweetNotifier {
     }
 
     private suspend fun notifyToDiscordWebhook(tweet: Status, webhookUrl: String) {
-        TweetchimeHttpClient.post<Unit>(webhookUrl) {
+        AppHttpClient.post<Unit>(webhookUrl) {
             contentType(ContentType.Application.Json)
 
             body = DiscordWebhookMessage(

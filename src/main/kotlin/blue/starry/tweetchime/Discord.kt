@@ -1,3 +1,5 @@
+@file:Suppress("Unused")
+
 package blue.starry.tweetchime
 
 import kotlinx.serialization.KSerializer
