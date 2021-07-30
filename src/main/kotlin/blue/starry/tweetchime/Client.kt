@@ -16,8 +16,6 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.sql.Connection
 
-val AppConfig = Config.load()
-
 val AppHttpClient by lazy {
     HttpClient {
         install(JsonFeature) {
@@ -33,8 +31,8 @@ val AppHttpClient by lazy {
 val AppTwitterClient by lazy {
     PenicillinClient {
         account {
-            application(AppConfig.ck, AppConfig.cs)
-            token(AppConfig.at, AppConfig.ats)
+            application(Env.TWITTER_CK, Env.TWITTER_CS)
+            token(Env.TWITTER_AT, Env.TWITTER_ATS)
         }
         httpClient(AppHttpClient)
     }

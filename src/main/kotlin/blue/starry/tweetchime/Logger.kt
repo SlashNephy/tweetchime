@@ -8,7 +8,7 @@ fun KotlinLogging.create(name: String): KLogger {
     val logger = logger(name)
     val underlying = logger.underlyingLogger
     if (underlying is ch.qos.logback.classic.Logger) {
-        underlying.level = Level.toLevel(AppConfig.logLevel, Level.INFO)
+        underlying.level = Level.toLevel(Env.LOG_LEVEL, Level.INFO)
     }
 
     return logger

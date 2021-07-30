@@ -7,7 +7,6 @@ plugins {
 object Versions {
     const val Penicillin = "6.2.1"
     const val Ktor = "1.6.2"
-    const val kaml = "0.35.0"
 
     const val Exposed = "0.32.1"
     const val SQLiteJDBC = "3.36.0.1"
@@ -20,7 +19,6 @@ object Libraries {
     const val Penicillin = "blue.starry:penicillin:${Versions.Penicillin}"
     const val KtorClientCIO = "io.ktor:ktor-client-cio:${Versions.Ktor}"
     const val KtorClientSerialization = "io.ktor:ktor-client-serialization:${Versions.Ktor}"
-    const val kaml = "com.charleskorn.kaml:kaml:${Versions.kaml}"
 
     const val ExposedCore = "org.jetbrains.exposed:exposed-core:${Versions.Exposed}"
     const val ExposedJDBC = "org.jetbrains.exposed:exposed-jdbc:${Versions.Exposed}"
@@ -31,11 +29,7 @@ object Libraries {
     const val LogbackClassic = "ch.qos.logback:logback-classic:${Versions.Logback}"
 
     val ExperimentalAnnotations = setOf(
-        "kotlinx.coroutines.ExperimentalCoroutinesApi",
-        "kotlin.io.path.ExperimentalPathApi",
-        "kotlin.time.ExperimentalTime",
-        "kotlin.ExperimentalStdlibApi",
-        "kotlinx.coroutines.FlowPreview"
+        "kotlin.time.ExperimentalTime"
     )
 }
 
@@ -47,7 +41,6 @@ dependencies {
     implementation(Libraries.Penicillin)
     implementation(Libraries.KtorClientCIO)
     implementation(Libraries.KtorClientSerialization)
-    implementation(Libraries.kaml)
 
     implementation(Libraries.ExposedCore)
     implementation(Libraries.ExposedJDBC)

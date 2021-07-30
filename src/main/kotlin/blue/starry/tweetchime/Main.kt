@@ -9,23 +9,15 @@ private val logger = KotlinLogging.create("app")
 suspend fun main() {
     logger.info { "Application started!" }
 
-    val feeds = AppConfig.tweets
-    require(feeds.isNotEmpty()) {
-        "No tweets available. Exit..."
-    }
-
-    require(AppConfig.interval >= 10) {
-        "Too short interval passed. Please set it to 10 or greater value."
-    }
-
-    require(AppConfig.limit > 0) {
-        "Limit requires positive number (> 0)."
+    require(Env.LIMIT_NOTIFICATIONS > 0) {
+        "LIMIT_NOTIFICATIONS requires positive number (> 0)."
     }
 
     while (true) {
-        TweetNotifier.check(feeds)
+        TweetNotifier.check()
 
-        logger.trace { "Sleep ${Duration.seconds(AppConfig.interval)}." }
-        delay(Duration.seconds(AppConfig.interval))
+        val sleep = Duration.seconds(Env.INTERVAL_SEC)
+        logger.trace { "Sleep ${sleep}." }
+        delay(sleep)
     }
 }
