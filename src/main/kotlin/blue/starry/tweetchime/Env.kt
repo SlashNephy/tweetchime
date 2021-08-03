@@ -31,7 +31,7 @@ private val stringOrNull: ReadOnlyProperty<Env, String?>
 
 private val stringList: ReadOnlyProperty<Env, List<String>>
     get() = ReadOnlyProperty { _, property ->
-        System.getenv(property.name)?.split(",").orEmpty()
+        System.getenv().filter { it.key.startsWith(property.name) }.values.toList()
     }
 
 private fun int(default: () -> Int): ReadOnlyProperty<Env, Int> {
@@ -48,7 +48,7 @@ private fun long(default: () -> Long): ReadOnlyProperty<Env, Long> {
 
 private val longList: ReadOnlyProperty<Env, List<Long>>
     get() = ReadOnlyProperty { _, property ->
-        System.getenv(property.name)?.split(",")?.mapNotNull { it.toLongOrNull() }.orEmpty()
+        System.getenv().filter { it.key.startsWith(property.name) }.values.mapNotNull { it.toLongOrNull() }
     }
 
 private fun String?.toBooleanFazzy(): Boolean {
