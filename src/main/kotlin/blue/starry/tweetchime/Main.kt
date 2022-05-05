@@ -2,30 +2,22 @@ package blue.starry.tweetchime
 
 import kotlinx.coroutines.delay
 import mu.KotlinLogging
-import kotlin.time.seconds
+import kotlin.time.Duration
 
-private val logger = KotlinLogging.createFeedchimeLogger("tweetchime")
+private val logger = KotlinLogging.create("app")
 
 suspend fun main() {
     logger.info { "Application started!" }
 
-    val feeds = TweetchimeConfig.tweets
-    require(feeds.isNotEmpty()) {
-        "No tweets available. Exit..."
-    }
-
-    require(TweetchimeConfig.interval >= 10) {
-        "Too short interval passed. Please set it to 10 or greater value."
-    }
-
-    require(TweetchimeConfig.limit > 0) {
-        "Limit requires positive number (> 0)."
+    require(Env.LIMIT_NOTIFICATIONS > 0) {
+        "LIMIT_NOTIFICATIONS requires positive number (> 0)."
     }
 
     while (true) {
-        TweetNotifier.check(feeds)
+        TweetNotifier.check()
 
-        logger.trace { "Sleep ${TweetchimeConfig.interval.seconds}." }
-        delay(TweetchimeConfig.interval.seconds)
+        val sleep = Duration.seconds(Env.INTERVAL_SEC)
+        logger.trace { "Sleep ${sleep}." }
+        delay(sleep)
     }
 }

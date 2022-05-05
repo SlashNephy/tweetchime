@@ -20,49 +20,48 @@ import java.time.ZoneOffset
 
 object TweetNotifier {
     init {
-        transaction(TweetchimeDatabase) {
+        transaction(AppDatabase) {
             SchemaUtils.create(TweetUserScreenNameHistories)
             SchemaUtils.create(TweetUserIdHistories)
             SchemaUtils.create(TweetListIdHistories)
         }
     }
 
-    private val logger = KotlinLogging.createFeedchimeLogger("tweetchime.notifier")
+    private val logger = KotlinLogging.create("app.notifier")
 
-    suspend fun check(tweets: List<Config.Tweet>) = coroutineScope {
-        tweets.map {
-            launch {
-                when {
-                    it.userScreenName != null -> {
-                        checkByUserScreenName(it.userScreenName, it)
-                    }
-                    it.userId != null -> {
-                        checkByUserId(it.userId, it)
-                    }
-                    it.listId != null -> {
-                        checkByListId(it.listId, it)
-                    }
-                    else -> {
-                        logger.warn { "$it is not valid." }
-                    }
+    suspend fun check() = coroutineScope {
+        listOf(
+            Env.TARGET_SCREEN_NAMES.map {
+                launch {
+                    checkByUserScreenName(it)
+                }
+            },
+            Env.TARGET_USER_IDS.map {
+                launch {
+                    checkByUserId(it)
+                }
+            },
+            Env.TARGET_LIST_IDS.map {
+                launch {
+                    checkByListId(it)
                 }
             }
-        }.joinAll()
+        ).flatten().joinAll()
     }
 
-    private suspend fun checkByUserScreenName(screenName: String, config: Config.Tweet) {
-        val lastId = transaction(TweetchimeDatabase) {
+    private suspend fun checkByUserScreenName(screenName: String) {
+        val lastId = transaction(AppDatabase) {
             TweetUserScreenNameHistories.select { TweetUserScreenNameHistories.user eq screenName }.firstOrNull()?.get(TweetUserScreenNameHistories.id)
         }
         var newId = 0L
 
-        TweetFetcher.byUserScreenName(screenName, lastId, TweetchimeConfig.limit)
+        TweetFetcher.byUserScreenName(screenName, lastId, Env.LIMIT_NOTIFICATIONS)
             .collectIndexed { i, tweet ->
                 logger.trace { tweet }
 
                 // only notify when lastId is present and tweet is not ignored
-                if (lastId != null && config.ignoreTexts.none { it in tweet.text } && (tweet.retweetedStatus == null || !config.ignoreRTs)) {
-                    notify(tweet, config)
+                if (lastId != null && Env.IGNORE_TEXTS.none { it in tweet.text } && (tweet.retweetedStatus == null || !Env.IGNORE_RTS)) {
+                    notify(tweet)
                 }
 
                 // save first id
@@ -76,7 +75,7 @@ object TweetNotifier {
             return
         }
 
-        transaction(TweetchimeDatabase) {
+        transaction(AppDatabase) {
             // update if exists
             if (lastId != null) {
                 TweetUserScreenNameHistories.update({ TweetUserScreenNameHistories.user eq screenName }) {
@@ -92,19 +91,19 @@ object TweetNotifier {
         }
     }
 
-    private suspend fun checkByUserId(userId: Long, config: Config.Tweet) {
-        val lastId = transaction(TweetchimeDatabase) {
+    private suspend fun checkByUserId(userId: Long) {
+        val lastId = transaction(AppDatabase) {
             TweetUserIdHistories.select { TweetUserIdHistories.user eq userId }.firstOrNull()?.get(TweetUserIdHistories.id)
         }
         var newId = 0L
 
-        TweetFetcher.byUserId(userId, lastId, TweetchimeConfig.limit)
+        TweetFetcher.byUserId(userId, lastId, Env.LIMIT_NOTIFICATIONS)
             .collectIndexed { i, tweet ->
                 logger.trace { tweet }
 
                 // only notify when lastId is present and tweet is not ignored
-                if (lastId != null && config.ignoreTexts.none { it in tweet.text } && (tweet.retweetedStatus == null || !config.ignoreRTs)) {
-                    notify(tweet, config)
+                if (lastId != null && Env.IGNORE_TEXTS.none { it in tweet.text } && (tweet.retweetedStatus == null || !Env.IGNORE_RTS)) {
+                    notify(tweet)
                 }
 
                 // save first id
@@ -118,7 +117,7 @@ object TweetNotifier {
             return
         }
 
-        transaction(TweetchimeDatabase) {
+        transaction(AppDatabase) {
             // update if exists
             if (lastId != null) {
                 TweetUserIdHistories.update({ TweetUserIdHistories.user eq userId }) {
@@ -134,19 +133,19 @@ object TweetNotifier {
         }
     }
 
-    private suspend fun checkByListId(listId: Long, config: Config.Tweet) {
-        val lastId = transaction(TweetchimeDatabase) {
+    private suspend fun checkByListId(listId: Long) {
+        val lastId = transaction(AppDatabase) {
             TweetListIdHistories.select { TweetListIdHistories.list eq listId }.firstOrNull()?.get(TweetListIdHistories.id)
         }
         var newId = 0L
 
-        TweetFetcher.byListId(listId, lastId, TweetchimeConfig.limit)
+        TweetFetcher.byListId(listId, lastId, Env.LIMIT_NOTIFICATIONS)
             .collectIndexed { i, tweet ->
                 logger.trace { tweet }
 
                 // only notify when lastId is present and tweet is not ignored
-                if (lastId != null && config.ignoreTexts.none { it in tweet.text } && (tweet.retweetedStatus == null || !config.ignoreRTs)) {
-                    notify(tweet, config)
+                if (lastId != null && Env.IGNORE_TEXTS.none { it in tweet.text } && (tweet.retweetedStatus == null || !Env.IGNORE_RTS)) {
+                    notify(tweet)
                 }
 
                 // save first id
@@ -160,7 +159,7 @@ object TweetNotifier {
             return
         }
 
-        transaction(TweetchimeDatabase) {
+        transaction(AppDatabase) {
             // update if exists
             if (lastId != null) {
                 TweetListIdHistories.update({ TweetListIdHistories.list eq listId }) {
@@ -176,20 +175,18 @@ object TweetNotifier {
         }
     }
 
-    private suspend fun notify(tweet: Status, config: Config.Tweet) {
-        if (config.discordWebhookUrl != null) {
-            notifyToDiscordWebhook(tweet, config.discordWebhookUrl)
-        }
+    private suspend fun notify(tweet: Status) {
+        notifyToDiscordWebhook(tweet, Env.DISCORD_WEBHOOK_URL)
     }
 
     private suspend fun notifyToDiscordWebhook(tweet: Status, webhookUrl: String) {
-        TweetchimeHttpClient.post<Unit>(webhookUrl) {
+        AppHttpClient.post<Unit>(webhookUrl) {
             contentType(ContentType.Application.Json)
 
             body = DiscordWebhookMessage(
-                content = "https://twitter.com/${tweet.user.screenName}/status/${tweet.id}",
                 embeds = listOf(
                     DiscordEmbed(
+                        color = 1942002,
                         author = DiscordEmbed.Author(
                             name = "${tweet.user.name} (@${tweet.user.screenName})",
                             url = "https://twitter.com/${tweet.user.screenName}",
@@ -198,14 +195,8 @@ object TweetNotifier {
                         description = tweet.text,
                         fields = listOf(
                             DiscordEmbed.Field(
-                                name = "Retweets",
-                                value = "${tweet.retweetCount}",
-                                inline = true
-                            ),
-                            DiscordEmbed.Field(
-                                name = "Likes",
-                                value = "${tweet.favoriteCount}",
-                                inline = true
+                                name = "Link",
+                                value = "https://twitter.com/${tweet.user.screenName}/status/${tweet.id}"
                             )
                         ),
                         image = tweet.entities.media.firstOrNull()?.let {

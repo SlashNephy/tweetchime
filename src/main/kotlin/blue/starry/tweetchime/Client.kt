@@ -16,9 +16,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.sql.Connection
 
-val TweetchimeConfig = Config.load()
-
-val TweetchimeHttpClient by lazy {
+val AppHttpClient by lazy {
     HttpClient {
         install(JsonFeature) {
             serializer = KotlinxSerializer()
@@ -30,17 +28,17 @@ val TweetchimeHttpClient by lazy {
     }
 }
 
-val TweetchimeTwitterClient by lazy {
+val AppTwitterClient by lazy {
     PenicillinClient {
         account {
-            application(TweetchimeConfig.ck, TweetchimeConfig.cs)
-            token(TweetchimeConfig.at, TweetchimeConfig.ats)
+            application(Env.TWITTER_CK, Env.TWITTER_CS)
+            token(Env.TWITTER_AT, Env.TWITTER_ATS)
         }
-        httpClient(TweetchimeHttpClient)
+        httpClient(AppHttpClient)
     }
 }
 
-val TweetchimeDatabase by lazy {
+val AppDatabase by lazy {
     TransactionManager.manager.defaultIsolationLevel = Connection.TRANSACTION_SERIALIZABLE
 
     Files.createDirectories(Paths.get("data"))

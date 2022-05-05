@@ -10,7 +10,7 @@
         </encoder>
     </appender>
 
-    <logger name="tweetchime" level="INFO" />
+    <logger name="app" level="INFO" />
 
     <root level="INFO">
         <appender-ref ref="STDOUT" />

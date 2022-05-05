@@ -2,7 +2,7 @@
 
 🔔 Simple tweet notifier which supports Discord Webhook
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.4.30-blue)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.5-blue)](https://kotlinlang.org)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/SlashNephy/tweetchime)](https://github.com/SlashNephy/tweetchime/releases)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/SlashNephy/tweetchime/Docker)](https://hub.docker.com/r/slashnephy/tweetchime)
 [![Docker Image Size (tag)](https://img.shields.io/docker/image-size/slashnephy/tweetchime/latest)](https://hub.docker.com/r/slashnephy/tweetchime)
@@ -11,55 +11,15 @@
 [![issues](https://img.shields.io/github/issues/SlashNephy/tweetchime)](https://github.com/SlashNephy/tweetchime/issues)
 [![pull requests](https://img.shields.io/github/issues-pr/SlashNephy/tweetchime)](https://github.com/SlashNephy/tweetchime/pulls)
 
-[![screenshot.png](https://raw.githubusercontent.com/SlashNephy/tweetchime/master/docs/screenshot.png)](https://github.com/SlashNephy/tweetchime)
+[![screenshot.png](https://i.imgur.com/S7zK0Kl.png)](https://github.com/SlashNephy/tweetchime)
 
 ## Requirements
 
-- Java 8 or later
+- Java 11 or later
 
-## Get Started
+## Docker
 
-`config.yml`
-
-```yaml
-# Twitter の資格情報
-ck: xxx
-cs: xxx
-at: xxx
-ats: xxx
-
-# ツイートの取得間隔 (秒)
-# 10 未満の値はエラーになります
-interval: 3600
-# 一度のチェックで通知する最大数
-limit: 1
-# ログレベル (OFF, ERROR, WARN, INFO, DEBUG, TRACE, ALL)
-logLevel: 'TRACE'
-
-# チェックするツイート定義のリスト
-tweets:
-    # スクリーンネーム
-  - userScreenName: 'AUTOMATONJapan'
-    # Discord Webhook URL
-    discordWebhookUrl: 'https://discord.com/api/webhooks/xxx/xxx'
-    # RT を無視するか
-    ignoreRTs: true
-    # 無視するテキスト (部分一致)
-    ignoreTexts:
-      - '【求人】'
-
-    # ユーザ ID
-  - userId: 4000001
-    discordWebhookUrl: 'https://discord.com/api/webhooks/xxx/xxx'
-
-    # リスト ID
-  - listId: 10000001
-    discordWebhookUrl: 'https://discord.com/api/webhooks/xxx/xxx'
-```
-
-### Docker
-
-There are some image tags.
+There are some images.
 
 - `slashnephy/tweetchime:latest`  
   Automatically published every push to `master` branch.
@@ -79,8 +39,36 @@ services:
     image: slashnephy/tweetchime:latest
     restart: always
     volumes:
-      - ./config.yml:/app/config.yml:ro
       - data:/app/data
+    environment:
+      # 必須: Twitter 資格情報
+      TWITTER_CK: xxx
+      TWITTER_CS: xxx
+      TWITTER_AT: xxx-xxx
+      TWITTER_ATS: xxx
+      # 必須: Discord Webhook URL
+      DISCORD_WEBHOOK_URL: https://discord.com/api/webhooks/xxx
+
+      # ツイートの取得間隔 (秒)
+      INTERVAL_SEC: 1800
+      # 一度のチェックで通知する最大数
+      LIMIT_NOTIFICATIONS: 1
+      # ログレベル (OFF, ERROR, WARN, INFO, DEBUG, TRACE, ALL)
+      LOG_LEVEL: 'TRACE'
+      
+      # 対象のスクリーンネーム (複数指定可能)
+      TARGET_SCREEN_NAMES: 'maaya_taso'
+      TARGET_SCREEN_NAMES2: 'AUTOMATONJapan'
+      # 対象のユーザ ID (複数指定可能)
+      TARGET_USER_IDS: 100000
+      # 対象のリスト ID (複数指定可能)
+      TARGET_LIST_IDS: 100000001
+
+      # RT を無視するか
+      IGNORE_RTS: 1
+      # 無視するテキスト (部分一致, 複数指定可能)
+      IGNORE_TEXTS: '求人'
+      IGNORE_TEXTS2: 'PR'
 
 volumes:
   data:
