@@ -2,7 +2,7 @@ package blue.starry.tweetchime
 
 import kotlinx.coroutines.delay
 import mu.KotlinLogging
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 private val logger = KotlinLogging.create("app")
 
@@ -16,8 +16,8 @@ suspend fun main() {
     while (true) {
         TweetNotifier.check()
 
-        val sleep = Duration.seconds(Env.INTERVAL_SEC)
-        logger.trace { "Sleep ${sleep}." }
+        val sleep = Env.INTERVAL_SEC.seconds
+        logger.trace { "Sleep $sleep." }
         delay(sleep)
     }
 }

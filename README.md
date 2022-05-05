@@ -2,7 +2,7 @@
 
 🔔 Simple tweet notifier which supports Discord Webhook
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.5-blue)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.6-blue)](https://kotlinlang.org)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/SlashNephy/tweetchime)](https://github.com/SlashNephy/tweetchime/releases)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/SlashNephy/tweetchime/Docker)](https://hub.docker.com/r/slashnephy/tweetchime)
 [![Docker Image Size (tag)](https://img.shields.io/docker/image-size/slashnephy/tweetchime/latest)](https://hub.docker.com/r/slashnephy/tweetchime)
@@ -15,17 +15,17 @@
 
 ## Requirements
 
-- Java 11 or later
+- Java 17 or later
 
 ## Docker
 
 There are some images.
 
-- `slashnephy/tweetchime:latest`  
+- `ghcr.io/slashnephy/tweetchime:latest`  
   Automatically published every push to `master` branch.
-- `slashnephy/tweetchime:dev`  
+- `ghcr.io/slashnephy/tweetchime:dev`  
   Automatically published every push to `dev` branch.
-- `slashnephy/tweetchime:<version>`  
+- `ghcr.io/slashnephy/tweetchime:<version>`  
   Coresponding to release tags on GitHub.
 
 `docker-compose.yml`
@@ -36,7 +36,7 @@ version: '3.8'
 services:
   tweetchime:
     container_name: tweetchime
-    image: slashnephy/tweetchime:latest
+    image: ghcr.io/slashnephy/tweetchime:latest
     restart: always
     volumes:
       - data:/app/data
