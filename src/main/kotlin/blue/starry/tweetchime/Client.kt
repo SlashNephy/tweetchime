@@ -6,10 +6,10 @@ import blue.starry.penicillin.core.session.config.application
 import blue.starry.penicillin.core.session.config.httpClient
 import blue.starry.penicillin.core.session.config.token
 import io.ktor.client.*
-import io.ktor.client.features.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.json
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import java.nio.file.Files
@@ -18,8 +18,8 @@ import java.sql.Connection
 
 val AppHttpClient by lazy {
     HttpClient {
-        install(JsonFeature) {
-            serializer = KotlinxSerializer()
+        install(ContentNegotiation) {
+            json()
         }
 
         defaultRequest {

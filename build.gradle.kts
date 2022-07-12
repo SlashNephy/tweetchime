@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "1.6.21"
-    kotlin("plugin.serialization") version "1.6.21"
+    kotlin("jvm") version "1.7.10"
+    kotlin("plugin.serialization") version "1.7.10"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 
     id("com.adarshr.test-logger") version "3.2.0"
@@ -12,9 +12,12 @@ repositories {
 }
 
 dependencies {
+    implementation(kotlin("stdlib"))
+
     implementation("blue.starry:penicillin:6.2.3")
-    implementation("io.ktor:ktor-client-cio:1.6.8")
-    implementation("io.ktor:ktor-client-serialization:1.6.8")
+    implementation("io.ktor:ktor-client-java:2.0.3")
+    implementation("io.ktor:ktor-client-content-negotiation:2.0.3")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.3")
 
     implementation("org.jetbrains.exposed:exposed-jdbc:0.38.2")
     implementation("org.xerial:sqlite-jdbc:3.36.0.3")
@@ -28,10 +31,8 @@ kotlin {
         compilations.all {
             kotlinOptions {
                 jvmTarget = JavaVersion.VERSION_17.toString()
-                apiVersion = "1.6"
-                languageVersion = "1.6"
-                allWarningsAsErrors = true
-                verbose = true
+                apiVersion = "1.7"
+                languageVersion = "1.7"
             }
         }
     }

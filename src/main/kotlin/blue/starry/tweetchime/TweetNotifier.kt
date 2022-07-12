@@ -180,10 +180,10 @@ object TweetNotifier {
     }
 
     private suspend fun notifyToDiscordWebhook(tweet: Status, webhookUrl: String) {
-        AppHttpClient.post<Unit>(webhookUrl) {
+        AppHttpClient.post(webhookUrl) {
             contentType(ContentType.Application.Json)
 
-            body = DiscordWebhookMessage(
+            setBody(DiscordWebhookMessage(
                 embeds = listOf(
                     DiscordEmbed(
                         color = 1942002,
@@ -213,7 +213,7 @@ object TweetNotifier {
                         timestamp = tweet.createdAt.instant.atOffset(ZoneOffset.UTC)?.toZonedDateTime()
                     )
                 )
-            )
+            ))
         }
     }
 }

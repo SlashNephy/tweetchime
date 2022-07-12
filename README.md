@@ -2,11 +2,9 @@
 
 🔔 Simple tweet notifier which supports Discord Webhook
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.6-blue)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.7-blue)](https://kotlinlang.org)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/SlashNephy/tweetchime)](https://github.com/SlashNephy/tweetchime/releases)
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/SlashNephy/tweetchime/Docker)](https://hub.docker.com/r/slashnephy/tweetchime)
-[![Docker Image Size (tag)](https://img.shields.io/docker/image-size/slashnephy/tweetchime/latest)](https://hub.docker.com/r/slashnephy/tweetchime)
-[![Docker Pulls](https://img.shields.io/docker/pulls/slashnephy/tweetchime)](https://hub.docker.com/r/slashnephy/tweetchime)
 [![license](https://img.shields.io/github/license/SlashNephy/tweetchime)](https://github.com/SlashNephy/tweetchime/blob/master/LICENSE)
 [![issues](https://img.shields.io/github/issues/SlashNephy/tweetchime)](https://github.com/SlashNephy/tweetchime/issues)
 [![pull requests](https://img.shields.io/github/issues-pr/SlashNephy/tweetchime)](https://github.com/SlashNephy/tweetchime/pulls)
@@ -17,17 +15,6 @@
 
 - Java 17 or later
 
-## Docker
-
-There are some images.
-
-- `ghcr.io/slashnephy/tweetchime:latest`  
-  Automatically published every push to `master` branch.
-- `ghcr.io/slashnephy/tweetchime:dev`  
-  Automatically published every push to `dev` branch.
-- `ghcr.io/slashnephy/tweetchime:<version>`  
-  Coresponding to release tags on GitHub.
-
 `docker-compose.yml`
 
 ```yaml
@@ -36,7 +23,7 @@ version: '3.8'
 services:
   tweetchime:
     container_name: tweetchime
-    image: ghcr.io/slashnephy/tweetchime:latest
+    image: ghcr.io/slashnephy/tweetchime:master
     restart: always
     volumes:
       - data:/app/data
@@ -72,5 +59,4 @@ services:
 
 volumes:
   data:
-    driver: local
 ```
