@@ -14,7 +14,7 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
 
-    implementation("blue.starry:penicillin:6.3.0-alpha2")
+    implementation("blue.starry:penicillin:6.3.0")
     implementation("io.ktor:ktor-client-java:2.0.3")
     implementation("io.ktor:ktor-client-content-negotiation:2.0.3")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.0.3")
